@@ -1,0 +1,18 @@
+# Phase 1, run on xulab (RTX 5090, 32 GB), GPU 1 only. Same experiment as the AIMS spec of the same name, adapted to be gentle on a
+# shared workstation and to avoid the AIMS failure modes (see docs/DECISIONS.md, 2026-10-02/03):
+#   - one GPU, no DDP: micro-batch 4 (+4 replay) x 8 accumulation = 32 + 32 per optimizer step (the authors' effective batch)
+#   - 5 evaluation workers (AIMS used 10-20), 8 data-loader workers, low CPU priority (nice 10)
+track: D
+suite: libero_10
+n_tasks: 2
+method: er
+budget: micro
+protocol: original
+seed: 100
+phase: p1
+codebase: dmpel
+machine: xulab-rtx5090
+dmpel:
+  policy: bc_foundation_policy_fft
+  lifelong: er
+  overrides: ["train.n_epochs=2", "train.batch_size=4", "train.grad_accum_steps=8", "eval.num_procs=5", "train.num_workers=8", "eval.num_workers=4"]

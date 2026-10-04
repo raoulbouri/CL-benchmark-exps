@@ -1,0 +1,14 @@
+# Phase 0 gate test: harness kill/resume + heldout protocol smoke (1 task, 1 epoch). Not a result.
+track: D
+suite: libero_goal
+n_tasks: 1
+method: dmpel
+budget: smoke
+protocol: heldout
+seed: 100
+phase: p0
+codebase: dmpel
+dmpel:
+  policy: bc_foundation_dmpel_policy
+  lifelong: dmpel
+  overrides: ["train.n_epochs=1", "lifelong.moe_attn_recall_epochs=1"]

@@ -1,0 +1,11 @@
+# Phase 1: held-out protocol check for CLARE (matrix on init states 0-39, 40 parallel envs, 1 batch).
+track: C
+suite: libero_10
+n_tasks: 2
+method: clare
+budget: micro
+protocol: heldout
+seed: 100
+phase: p1
+codebase: clare
+clare: {steps: 2000, disc_steps: 200, num_workers: 8}

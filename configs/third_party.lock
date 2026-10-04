@@ -1,0 +1,6 @@
+# third-party commits used by CL-benchmark (path  commit)  -- recreated 2026-10-04 from the AIMS record
+DMPEL  b1abe28  (patched: see configs/patches/ and scripts/patch_*.py)
+LIBERO  8f1084e
+openpi  215abfb  (read-only study; not used in runs)
+clare  ecb6600  (patched: eval_peft.py via scripts/patch_clare_protocol.py)
+gym-libero  29955c7

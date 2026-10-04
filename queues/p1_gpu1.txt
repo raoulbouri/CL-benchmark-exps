@@ -1,0 +1,3 @@
+configs/runs/p1/C-long2-clare-micro-original-s100.yaml
+configs/runs/p1/C-long2-er-micro-original-s100.yaml
+configs/runs/p1/C-long2-clare-micro-heldout-s100.yaml

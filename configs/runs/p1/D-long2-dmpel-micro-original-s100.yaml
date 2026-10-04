@@ -1,0 +1,11 @@
+# Phase 1: 2-task LIBERO-Long micro-stream (short schedule). Purpose: pipeline + cost model, not a result.
+track: D
+suite: libero_10
+n_tasks: 2
+method: dmpel
+budget: micro
+protocol: original
+seed: 100
+phase: p1
+codebase: dmpel
+dmpel: {policy: bc_foundation_dmpel_policy, lifelong: dmpel, overrides: ["train.n_epochs=2", "lifelong.moe_attn_recall_epochs=2"]}

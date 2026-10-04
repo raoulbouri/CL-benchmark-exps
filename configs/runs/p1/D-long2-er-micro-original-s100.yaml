@@ -1,0 +1,24 @@
+# Phase 1: DMPEL-codebase ER (full fine-tune incl. CLIP). Main question: does batch 32 fit on one 4090?
+# (authors ran it with 2-GPU DDP at batch 16 each). Buffer = DMPEL's hardcoded first 20% of sequences.
+# Attempt 0 at batch 32 ran out of GPU memory (23.3/23.5 GB). Attempt 1 measures cost at batch 16; how to
+# recover effective batch 32 (gradient accumulation vs 2-GPU DDP) is decided at the Phase 1 gate.
+# Attempt 1 at batch 16 also OOMed (replay doubles it to 32). Decision 2026-10-01: gradient accumulation,
+# micro-batch 8 (+8 replay) x 4 = 32 + 32 per optimizer step, as the authors' 2 x 16 DDP.
+# Attempt 2 (8+8 x 4) passed task 0 (14 GB) but OOMed in task 1 training: 8+8 sequences x 10 frames x 2 cameras
+# = 320 images through full-FT CLIP. Attempt 3: micro-batch 4 (+4) x 8 = same 32 + 32 per optimizer step.
+track: D
+suite: libero_10
+n_tasks: 2
+method: er
+budget: micro
+protocol: original
+seed: 100
+phase: p1
+codebase: dmpel
+# Attempt 3 (4+4 x 8, 1 GPU): training fit (14 GB) but OOM at the 5th evaluation with only 4.3 GB in the
+# training process (same eval index as attempt 2 at a different batch -> eval-side accumulation suspected).
+# Decision 2026-10-01 (user): both GPUs with gradient accumulation, as the authors' DDP:
+# 2 GPUs x micro-batch 4 (+4 replay) x 4 accumulation = 32 + 32 per optimizer step. gpu_mem.csv records leaks.
+# Attempt 5 OOMed on GPU 0 at the first evaluation (20 EGL workers) and the driver wedged shortly after (see DECISIONS,
+# 2026-10-02/03). Rerun with eval.num_procs=10 (same episodes, half the simultaneous GPU contexts).
+dmpel: {policy: bc_foundation_policy_fft, lifelong: er, ddp_gpus: 2, overrides: ["train.n_epochs=2", "train.batch_size=4", "train.grad_accum_steps=4", "eval.num_procs=10"]}

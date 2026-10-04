@@ -1,0 +1,14 @@
+# Phase 1: CLARE, 2-task micro-stream, 2000 policy steps + 200 discriminator steps per stage
+# (paper: 10k, script: 20k). Original eval: 100 episodes, 50 parallel envs.
+track: C
+suite: libero_10
+n_tasks: 2
+method: clare
+budget: micro
+protocol: original
+seed: 100
+phase: p1
+codebase: clare
+# Attempts 2-3 were SIGKILLed (host RAM) while another job ran; eval uses 25 parallel envs (100 episodes still
+# cover each of the 50 init states twice, since the state counter advances by num_envs).
+clare: {steps: 2000, disc_steps: 200, eval_batch: 25, num_workers: 8}

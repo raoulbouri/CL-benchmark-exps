@@ -1,0 +1,12 @@
+# secrets
+.env
+# raw run outputs, checkpoints, W&B local dirs
+outputs/
+wandb/
+*.pth
+*.pt
+*.hdf5
+# caches
+__pycache__/
+.pytest_cache/
+*.json.tmp

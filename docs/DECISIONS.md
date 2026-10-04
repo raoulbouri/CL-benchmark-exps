@@ -1,0 +1,75 @@
+# Decision log
+
+Dated record of protocol and scope changes. Newest last.
+
+- **2026-10-01: Repository created (Phase 0).** Results JSON in `results/` is the source of truth; W&B mirrors it (entity `rahulbouri16`, project `cl-benchmark`). Only metrics, tables and `result.json` are uploaded (W&B free plan: 5 GB).
+- **2026-10-01: Resume semantics.** The DMPEL codebase has no task-level resume: its expert library, router state and replay stores live in process memory between tasks. The harness therefore resumes at the *run* level. A queue skips runs whose result is `complete` and restarts incomplete runs from task 0 as a new attempt (new W&B run id, `-a{n}` suffix in the local output directory). Results are written after every task, so a crash loses at most the task in progress. This replaces the PI_REVIEW Phase 0 gate wording "resumes from its last task".
+- **2026-10-01: Harness environment.** Harness code (export, metrics, W&B) runs in the `libero` conda env (wandb 0.30). Training runs in each codebase's own env (`dmpel`, later `clare`). The harness never imports training code.
+- **2026-10-01: DMPEL codebase patches (Phase 1).** `max_tasks` (task cap for micro-streams) and `eval.protocol` (`original` | `heldout`) added; defaults reproduce the original behaviour. Diff: `configs/patches/dmpel_clb_protocol_and_max_tasks.patch`. The earlier data-loading shim is in `configs/patches/dmpel_datasets_demos_shim.patch`.
+- **2026-10-01: CLARE install findings.**
+  - Clone needs `GIT_LFS_SKIP_SMUDGE=1`: one LFS test image (`tests/artifacts/cameras/image_128x128.png`) returns 404 upstream. It affects test assets only.
+  - CLARE's LIBERO env factory imports `gym_libero`, which is not listed anywhere in the CLARE repo. We use `ZhangYi1999/gym-libero` (author is a CLARE co-author). It matches CLARE's env ids `Libero_10_Task_k`, 256×256 observations, 500-step episodes and the `_init_state_id` API. It has no licence file.
+  - Version pins in env `clare`:
+    - `transformers==4.56.2`: CLARE's `peft_lsy` imports `transformers.HybridCache`, which was removed in 5.x;
+    - `diffusers==0.35.1` and `huggingface-hub<1.0`: both follow CLARE's `pixi.lock`;
+    - `mujoco==2.3.7`: unpinned upstream; 3.14 was resolved, but we match Track D's LIBERO-era physics;
+    - torch 2.6.0+cu124 (lockfile has 2.8.0; not needed).
+  - The README's checkpoint `dit_flow_mt_libero_90_pretrain_new` does not exist on Hugging Face. We use `continuallearning/dit_flow_mt_libero_90_pretrain`, the only LIBERO-90 DiT-flow checkpoint published.
+- **2026-10-01: CLARE evaluation semantics (verified in code).**
+  - Each stage evaluates all seen tasks once, at the end of discriminator training (`train_discriminators_eval_freq`), giving one success-matrix row per stage.
+  - Initial states: on first reset each env takes the next value of a class-wide counter (mod 50), and later resets step by `num_envs`. With 50 envs and 100 episodes, every state is evaluated exactly twice.
+  - `heldout` pins env i to state i (0–39) with 40 envs and 40 episodes, via env var `CLB_EVAL_STATE_IDS` (patch: `configs/patches/clare_clb_heldout_eval.patch`).
+  - Episode limit is 500 steps (DMPEL: 600). This is recorded as a protocol difference and is not changed in Phase 1.
+- **2026-10-01: CLARE-codebase ER command.** No ER run script is released, so the harness builds it.
+  - Stage k > 0 loads the previous stage's full model and replays task k−1's dataset. (Micro-streams have 2 tasks; multi-task replay lists are tested in Phase 3.)
+  - Stage 0 has no past task and replays its own data.
+  - Replay batch 8 next to batch 32, as in `er.py` defaults.
+- **2026-10-01: Correction to PI_REVIEW.md.** "CLARE ER: ready" becomes "minor adaptation" (command and replay dataset construction are ours).
+- **2026-10-01: Phase 1 failures and fixes.**
+  - DMPEL-codebase ER (full fine-tune incl. CLIP) runs out of GPU memory at batch 32 on one RTX 4090 (23.3 of 23.5 GB). The cost measurement is re-run at batch 16. Restoring effective batch 32 (gradient accumulation, or the authors' 2-GPU DDP at 16 each) is an open decision for the Phase 1 gate.
+  - CLARE runs failed at dataset load because the harness passed a `main`-branch snapshot (converted to LeRobot v3.0) to a LeRobot fork that reads v2.1. The harness now downloads revision `v2.1`, which is what CLARE's own code requests.
+- **2026-10-01: Track C requires MuJoCo 3.x (supersedes the 2.3.7 pin above).**
+  - With `mujoco==2.3.7`, `gym_libero` renders broken materials: a yellow floor, a blue and green robot, an untextured table. The same assets render correctly under the original LIBERO env in Track D's setup. All three Phase 1 CLARE runs scored 0% for this reason.
+  - With `mujoco==3.3.0` the render matches CLARE's regenerated training frames (comparison images in `docs/figures/` if kept).
+  - The `clare` env therefore uses MuJoCo 3.3.0, and Track D keeps 2.3.7, which its data needs.
+  - The physics/renderer version is one more Track C vs Track D difference, labelled with the other cross-track confounds.
+  - The parser bug that hid these results is also fixed: CLARE prints `success_<task>` (a percentage), not `pc_success_<task>`.
+- **2026-10-01: DMPEL-codebase ER memory.** The OOM happens in the training step of task 1, where ER concatenates the replay batch to the current batch (`er.py observe`). `train.batch_size=16` therefore trains on 32 samples through fully fine-tuned CLIP and still exceeds 24 GB. Task 0, with no replay, peaks at 2.5 GB. Open decision for the user (Phase 1 gate).
+- **2026-10-01: CLARE success was never counted (gymnasium ≥ 1.0).**
+  - The Phase 1 CLARE runs reported `success = 0.0`, while the same evaluations had mean episode reward 0.68–0.75. LIBERO's reward is 1 on success, so about 70–75% of episodes succeeded.
+  - Cause: `eval_peft.py` reads success only from `info["final_info"]`, a key Gymnasium ≥ 1.0 vector envs no longer produce. Our env has gymnasium 1.3.0; CLARE's `pixi.lock` also lists a 1.x version (1.2.1).
+  - Patch (in `scripts/patch_clare_protocol.py`): if `final_info` is absent, read `info["is_success"]`, which `gym_libero` sets per step.
+  - Added to `docs/ISSUE_DRAFTS.md`.
+- **2026-10-01: CLARE runs are sequential on one GPU.** CLARE's ER was killed with SIGKILL (rc −9) while two CLARE evaluations ran at once (2 × 50 MuJoCo envs). Kernel logs are not readable without root; host RAM exhaustion is the likely cause. CLARE-codebase runs are now queued one after another.
+- **2026-10-01: Metrics bug fixed.** The bootstrap inferred the number of finished tasks from non-zero matrix rows; an all-zero matrix crashed the final export. The task count is now always explicit.
+- **2026-10-01: DMPEL-codebase ER uses gradient accumulation (user decision).**
+  - New setting `train.grad_accum_steps` (default 1 = original code path); patch in `scripts/patch_dmpel_grad_accum.py`.
+  - ER runs use micro-batch 8 (+8 replay) × 4 accumulation steps = 32 + 32 samples per optimizer step, matching the authors' 2-GPU DDP × 16.
+  - The OneCycle schedule still advances per micro-batch over the same epochs.
+- **2026-10-01: Finding, not changed: DMPEL-codebase ER clips gradients before unscaling.**
+  - `algos/er.py` calls `clip_grad_norm_(…, 100)` on fp16-scaled gradients (no `scaler.unscale_`), unlike `algos/base.py`. With a typical GradScaler scale (~65k), this clips the true gradient norm far below 100 and shrinks ER's effective learning rate. It may partly explain weak ER baselines in the literature.
+  - The `original` protocol keeps the released behaviour. Whether benchmark runs should fix it (unscale before clipping) is an open decision before Phase 4, and is added to `ISSUE_DRAFTS.md`.
+- **2026-10-01: ER micro-batch 4 (+4) × 8 accumulation.** 8 + 8 × 4 still ran out of GPU memory in task 1 (320 images per forward through full fine-tune CLIP). 4 + 4 × 8 keeps 32 + 32 per optimizer step.
+- **2026-10-01: No concurrent DMPEL + CLARE jobs.** CLARE original was SIGKILLed again while DMPEL ER ran. Remaining Phase 1 runs are chained one at a time (`scripts/chain_p1_final.sh`). CLARE original-protocol eval uses 25 parallel envs; 100 episodes still cover each of the 50 initial states twice.
+- **2026-10-01: CLARE uses the paper's settings (user decision).**
+  - Paper Table I, simulation column: 10,000 adapter steps, batch 32, adapter LR 1e-4 constant, expansion threshold γ = 2.5, and discriminators 2,000 steps at batch 32 and LR 5e-4. The released script (20,000 steps, γ = 1.0) is not used.
+  - Flag mapping (e.g. the policy's default cosine schedule vs the paper's constant LR) is verified when Phase 2 specs are written.
+- **2026-10-01: DMPEL-codebase ER on both GPUs (user decision).**
+  - `torchrun` DDP with 2 GPUs × micro-batch 4 (+4 replay) × 4 accumulation = 32 + 32 per optimizer step, matching the authors' 2-GPU setup.
+  - If it fails, the user-approved fallback is half the published effective batch: 2 × 4 (+4) × 2 = 16 + 16 (`D-long2-er-microhalf`).
+  - The launcher now samples per-process GPU memory every 20 s for every run (`gpu_mem.csv`, tagged with the evaluation count) to diagnose the suspected evaluation-side memory accumulation and to record peak VRAM for all codebases.
+- **2026-10-01: DMPEL issues posted.** #6 (FWT counter), #7 (ER n_memories), #8 (AMP clipping in baselines), posted from the user account without a signature. Issue 4 (installation) is pending the user approving a reference to existing issue #2, which reported the same demos error but attributed it to the dataset structure.
+- **2026-10-01: DMPEL-codebase ER still failing (attempt 3, micro-batch 4+4 x 8).** Task 1 training fits (14 GB), but the run OOMs in the task-1 selection evaluation (metric.py:168) while the training process holds only 4.3 GB and ~19 GB of GPU 0 is held by other processes. Hypothesis: interaction between evaluation workers and ER forcing the fork start method on every step (er.py observe). Needs a targeted diagnosis before ER enters Phase 2+.
+- **2026-10-01: Issue posting stopped by the user.** #6-#8 are posted; Issue 4 (installation) will not be posted.
+- **2026-10-03: Process note: AIMS is the source of truth for the harness.** The Mac folder `~/.claude/jobs/…/clb` is only a working copy that is rsynced to AIMS. A copy from the Mac overwrote three notes that had been appended on AIMS (restored above from git history). From now on, docs are edited on AIMS only, and syncs from the Mac exclude `docs/`.
+- **2026-10-02/03: GPU driver wedge on AIMS (04:35 UTC Oct 2), resolved by a machine restart.**
+  - Timeline: another user's 16-worker evaluation job started 04:34:22; our `eval_mem_probe.py` (20 EGL workers on GPU 0) started 04:35:20; by 04:36:15 the NVIDIA driver was deadlocked: `nvidia-smi` hung for every user, and processes of both users sat in uninterruptible sleep (our probe's main process in `nvidia_close_callback`, workers on driver locks). Load stayed pinned at ~49 until an admin restarted the machine (uptime reset by Oct 3 15:24; GPUs idle and responsive afterwards).
+  - Cause not proven: kernel logs need root. The trigger is plausibly many GPU contexts being created and torn down at once by two jobs; our probe is a possible contributor.
+  - Rules adopted: no diagnostic probes that open many GPU contexts; DMPEL evaluation uses 10 workers (`eval.num_procs=10`) instead of 20; never launch GPU jobs when another user's GPU job has started within the last few minutes.
+- **2026-10-03: ER rerun config.** `D-long2-er-micro-original-s100` now adds `eval.num_procs=10` to the 2-GPU DDP setup (2 × 4 (+4 replay) × 4 accumulation = 32 + 32 per optimizer step). Same episodes and initial states as with 20 workers; evaluation takes about twice as long.
+- **2026-10-03: DMPEL DDP checkpoint race (found via ER attempt 6 on AIMS, fixed).** (Restored on 2026-10-04 from the AIMS history; the entry had existed only on AIMS.)
+  - Attempt 6 passed both task-0 evaluations (0.00 then 0.85, no OOM with 10 eval workers), then died: rank 1 failed to read `task0_model.pth` (PytorchStream error) while rank 0 was rewriting it. The file mtime matched the failure time.
+  - Cause: `algos/base.py` L319-322 has every rank load the best checkpoint and then every rank rewrite the same path, with no barrier. DMPEL checkpoints are small (28 MB) so the window is tiny; ER saves 697 MB.
+  - Fix (`scripts/patch_dmpel_ddp_ckpt.py`): barrier after load, rank-0-only save, barrier. Same weights are written, so learning is unchanged. Single-GPU runs are untouched. Not reported upstream (issue posting stopped by the user).
+- **2026-10-04: Migration from AIMS to xulab (user decision: everything moves to `/mnt/data/users/bbouri`).** See `docs/MIGRATION_AIMS_TO_XULAB.md`. The harness git history is restarted here from the Mac working copy; AIMS history and results are fetched when AIMS returns.
+- **2026-10-04: Reproduction caveat recorded.** The three LIBERO-Goal replication runs used DMPEL's released default `moe_attn_recall_sample_ratio = 1.0` (every frame's coefficients stored), so NBT ≈ 0.000 there does not test the paper's claim at ρ = 5%. See `docs/MIGRATION_AIMS_TO_XULAB.md` §4 and the 5%-ρ reproduction run planned as the first experiment.

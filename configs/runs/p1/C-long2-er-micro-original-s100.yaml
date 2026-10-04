@@ -1,0 +1,12 @@
+# Phase 1: CLARE-codebase ER (er.py; no released run script, command built by the harness).
+# Stage 0 replays its own data (no past task exists); stage 1 replays task 0.
+track: C
+suite: libero_10
+n_tasks: 2
+method: er
+budget: micro
+protocol: original
+seed: 100
+phase: p1
+codebase: clare
+clare: {steps: 2000, eval_batch: 50, num_workers: 8, replay_batch_size: 8}

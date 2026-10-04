@@ -1,0 +1,11 @@
+# Phase 1: held-out protocol check for DMPEL (selection on init states 40-49, matrix on 0-39).
+track: D
+suite: libero_10
+n_tasks: 2
+method: dmpel
+budget: micro
+protocol: heldout
+seed: 100
+phase: p1
+codebase: dmpel
+dmpel: {policy: bc_foundation_dmpel_policy, lifelong: dmpel, overrides: ["train.n_epochs=2", "lifelong.moe_attn_recall_epochs=2"]}

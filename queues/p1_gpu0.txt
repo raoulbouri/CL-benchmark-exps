@@ -1,0 +1,3 @@
+configs/runs/p1/D-long2-dmpel-micro-original-s100.yaml
+configs/runs/p1/D-long2-er-micro-original-s100.yaml
+configs/runs/p1/D-long2-dmpel-micro-heldout-s100.yaml
