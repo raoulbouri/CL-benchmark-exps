@@ -1,0 +1,425 @@
+{
+ "name": "D-goal10-dmpel-full-original-s100",
+ "group": "D-goal10-dmpel-full-original",
+ "spec": {
+  "track": "D",
+  "suite": "libero_goal",
+  "n_tasks": 10,
+  "method": "dmpel",
+  "budget": "full",
+  "protocol": "original",
+  "seed": 100,
+  "phase": "e1",
+  "codebase": "dmpel",
+  "machine": "xulab-rtx5090",
+  "dmpel": {
+   "policy": "bc_foundation_dmpel_policy",
+   "lifelong": "dmpel",
+   "env": {
+    "CLB_AUDIT": 1
+   },
+   "overrides": [
+    "lifelong.moe_attn_recall_sample_ratio=0.05",
+    "eval.num_procs=5",
+    "train.num_workers=8",
+    "eval.num_workers=4"
+   ]
+  },
+  "eval_episodes": {
+   "selection": 20,
+   "matrix": 20
+  }
+ },
+ "status": "complete",
+ "run_dir": "/mnt/data/users/bbouri/CL-benchmark/outputs/D-goal10-dmpel-full-original-s100/a1/seed_100",
+ "log_path": "/mnt/data/users/bbouri/CL-benchmark/outputs/D-goal10-dmpel-full-original-s100/a1/train.log",
+ "tasks_done": 10,
+ "attempt": 1,
+ "spec_path": "/mnt/data/users/bbouri/CL-benchmark/configs/runs/p1x/D-goal10-dmpel-rho005-original-s100.yaml",
+ "gpu_index": 1,
+ "provenance": {
+  "harness_commit": "942c817",
+  "harness_dirty": true,
+  "third_party_lock": "# third-party commits used by CL-benchmark (path  commit)  -- recreated 2026-10-04 from the AIMS record\nDMPEL  b1abe28  (patched: see configs/patches/ and scripts/patch_*.py)\nLIBERO  8f1084e\nopenpi  215abfb  (read-only study; not used in runs)\nclare  ecb6600  (patched: eval_peft.py via scripts/patch_clare_protocol.py)\ngym-libero  29955c7\n",
+  "host": "autolab",
+  "gpu": "NVIDIA GeForce RTX 5090"
+ },
+ "started_at": 1791138760.9495919,
+ "schema_version": 1,
+ "updated_at": "2026-10-05T01:09:07Z",
+ "wandb": {
+  "id": "2285b1248698",
+  "mode": "online",
+  "url": "https://wandb.ai/rahulbouri16/cl-benchmark/runs/2285b1248698",
+  "tasks_logged": 10
+ },
+ "returncode": 0,
+ "gpu_peak_mib": {
+  "gpu0_peak_mib": 4594,
+  "gpu1_peak_mib": 20434
+ },
+ "wall_hours": 6.6067828460534415,
+ "gpus_used": [
+  1
+ ],
+ "n_tasks": 10,
+ "c_matrix": [
+  [
+   0.9,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   0.95,
+   0.9,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   0.8,
+   0.95,
+   0.85,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   0.65,
+   1.0,
+   0.95,
+   0.85,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   0.8,
+   0.95,
+   0.9,
+   0.95,
+   0.95,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   0.75,
+   0.95,
+   0.75,
+   0.9,
+   0.85,
+   0.95,
+   null,
+   null,
+   null,
+   null
+  ],
+  [
+   0.7,
+   0.6,
+   0.7,
+   0.55,
+   0.95,
+   0.75,
+   0.95,
+   null,
+   null,
+   null
+  ],
+  [
+   0.6,
+   0.8,
+   0.9,
+   0.7,
+   0.95,
+   1.0,
+   0.95,
+   1.0,
+   null,
+   null
+  ],
+  [
+   0.75,
+   0.9,
+   0.75,
+   0.7,
+   0.8,
+   0.9,
+   0.55,
+   0.95,
+   0.7,
+   null
+  ],
+  [
+   0.8,
+   0.6,
+   0.85,
+   0.75,
+   1.0,
+   0.8,
+   0.95,
+   0.9,
+   0.85,
+   0.9
+  ]
+ ],
+ "curves": [
+  [
+   0.0,
+   0.6,
+   0.6,
+   0.95,
+   0.9,
+   0.75
+  ],
+  [
+   0.0,
+   0.9,
+   1.0,
+   1.0,
+   1.0,
+   0.95
+  ],
+  [
+   0.0,
+   0.85,
+   0.85,
+   0.85,
+   0.8,
+   0.75
+  ],
+  [
+   0.0,
+   0.75,
+   0.65,
+   0.6,
+   0.9,
+   0.7
+  ],
+  [
+   0.1,
+   0.85,
+   0.95,
+   1.0,
+   1.0,
+   0.95
+  ],
+  [
+   0.0,
+   0.8,
+   0.7,
+   0.7,
+   0.85,
+   0.9
+  ],
+  [
+   0.0,
+   0.55,
+   0.85,
+   0.9,
+   1.0,
+   0.9
+  ],
+  [
+   0.05,
+   0.7,
+   0.95,
+   1.0,
+   0.95,
+   0.95
+  ],
+  [
+   0.0,
+   0.95,
+   1.0,
+   1.0,
+   1.0,
+   0.9
+  ],
+  [
+   0.0,
+   0.75,
+   0.5,
+   0.85,
+   0.5,
+   0.7
+  ]
+ ],
+ "dmpel_logged_s_fwd": [
+  1.3499999999999999,
+  1.6333333333333335,
+  2.125,
+  1.2666666666666666,
+  1.225,
+  0.9875,
+  0.86,
+  1.175,
+  1.6500000000000001,
+  1.2666666666666668
+ ],
+ "metrics": {
+  "n_tasks_scored": 10,
+  "fwt": 0.7266666666666668,
+  "nbt": 0.05551366843033509,
+  "nbt_normalized": 0.05459141529689631,
+  "auc": 0.7998647486772488,
+  "final_success": 0.8400000000000001,
+  "mean_just_learned_success": 0.8949999999999999,
+  "best_minus_last_epoch": 0.1
+ },
+ "accounting": {
+  "per_task": [
+   {
+    "replay_bytes_on_disk": 2346434,
+    "replay_bytes_past_tasks": 0,
+    "aux_bytes": 1711,
+    "growth_params": 1247285,
+    "growth_bytes": 5083555
+   },
+   {
+    "replay_bytes_on_disk": 4150404,
+    "replay_bytes_past_tasks": 2346434,
+    "aux_bytes": 3678,
+    "growth_params": 1901469,
+    "growth_bytes": 7700131
+   },
+   {
+    "replay_bytes_on_disk": 6003782,
+    "replay_bytes_past_tasks": 4150404,
+    "aux_bytes": 5901,
+    "growth_params": 2555653,
+    "growth_bytes": 10316771
+   },
+   {
+    "replay_bytes_on_disk": 9496584,
+    "replay_bytes_past_tasks": 6003782,
+    "aux_bytes": 8316,
+    "growth_params": 3209837,
+    "growth_bytes": 12933347
+   },
+   {
+    "replay_bytes_on_disk": 11156490,
+    "replay_bytes_past_tasks": 9496584,
+    "aux_bytes": 10987,
+    "growth_params": 3864021,
+    "growth_bytes": 15549923
+   },
+   {
+    "replay_bytes_on_disk": 13751052,
+    "replay_bytes_past_tasks": 11156490,
+    "aux_bytes": 13914,
+    "growth_params": 4518205,
+    "growth_bytes": 18166627
+   },
+   {
+    "replay_bytes_on_disk": 15484878,
+    "replay_bytes_past_tasks": 13751052,
+    "aux_bytes": 17033,
+    "growth_params": 5172389,
+    "growth_bytes": 20783203
+   },
+   {
+    "replay_bytes_on_disk": 16998096,
+    "replay_bytes_past_tasks": 15484878,
+    "aux_bytes": 20408,
+    "growth_params": 5826573,
+    "growth_bytes": 23399843
+   },
+   {
+    "replay_bytes_on_disk": 18714386,
+    "replay_bytes_past_tasks": 16998096,
+    "aux_bytes": 24039,
+    "growth_params": 6480757,
+    "growth_bytes": 26016419
+   },
+   {
+    "replay_bytes_on_disk": 21566932,
+    "replay_bytes_past_tasks": 18714386,
+    "aux_bytes": 27862,
+    "growth_params": 7134941,
+    "growth_bytes": 28632995
+   }
+  ]
+ },
+ "timings": {
+  "per_task_train_min": [
+   29.6,
+   20.9,
+   24.3,
+   40.8,
+   21.6,
+   31.7,
+   23.7,
+   20.5,
+   19.9,
+   36.7
+  ],
+  "per_task_eval_loss_min": [
+   1.1,
+   1.8,
+   2.6,
+   4.2,
+   5.0,
+   6.1,
+   6.9,
+   7.6,
+   8.3,
+   9.7
+  ],
+  "per_task_eval_success_min": [
+   1.2,
+   2.2,
+   3.7,
+   4.7,
+   5.7,
+   8.0,
+   9.8,
+   9.4,
+   12.4,
+   16.4
+  ],
+  "selection_eval_min_total": 79.12999999999998,
+  "gpu_hours_logged": 6.608333333333334,
+  "peak_train_mem_gb": 18.549
+ },
+ "bootstrap_episode_ci95": {
+  "fwt": [
+   0.7150000000000001,
+   0.7591666666666667
+  ],
+  "nbt": [
+   0.006292824074074067,
+   0.10445425485008816
+  ],
+  "auc": [
+   0.7820867228835978,
+   0.8239947751322753
+  ],
+  "final_success": [
+   0.79,
+   0.885
+  ]
+ }
+}

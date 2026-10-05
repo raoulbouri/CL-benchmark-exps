@@ -1,0 +1,19 @@
+# Experiment 1 (ρ audit): DMPEL on LIBERO-Goal, 10 tasks, coefficient buffer at 5% of frames (the paper's memory claim).
+# The earlier AIMS replication ran at the released default rho = 1.0 and so did not test it. Paper settings otherwise
+# (10 epochs, 10 recall epochs, batch 32). Audit outputs (buffer indices, router log) come from scripts/patch_dmpel_audit.py.
+# xulab: GPU 1 only, one GPU (no DDP), 5 eval workers, low CPU priority.
+track: D
+suite: libero_goal
+n_tasks: 10
+method: dmpel
+budget: full
+protocol: original
+seed: 100
+phase: e1
+codebase: dmpel
+machine: xulab-rtx5090
+dmpel:
+  policy: bc_foundation_dmpel_policy
+  lifelong: dmpel
+  env: {CLB_AUDIT: 1}
+  overrides: ["lifelong.moe_attn_recall_sample_ratio=0.05", "eval.num_procs=5", "train.num_workers=8", "eval.num_workers=4"]
