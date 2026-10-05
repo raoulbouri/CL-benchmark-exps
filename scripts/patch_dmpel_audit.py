@@ -236,3 +236,27 @@ if "CLB_ACT_LOG" not in _sm:
     _pm.write_text(_sm)
     compile(_sm, str(_pm), "exec")
     print("metric.py: v3 gripper log added")
+
+
+# v4: log only genuine rollout calls. v3 left the router hook active after evaluation (the policy stays in eval mode), so the
+# post-training buffer pass (32-row batches, no rollout) was logged into the next matrix file with a stale (loop, step)
+# context (found 2026-10-05 in Experiment 3). Fix: the context is cleared right after each get_action and the hook only
+# logs while a context is set. Logs written before v4 are filtered in scripts/analyze_routing.py (5 rows, consecutive steps).
+_pa = D / "models/modules/adapter.py"
+_sa = _pa.read_text()
+if "CLB audit v4" not in _sa:
+    _o = '        if (not self.training) and _clb_os.environ.get("CLB_AUDIT") == "1":\n'
+    assert _sa.count(_o) == 1, "adapter v4 anchor"
+    _sa = _sa.replace(_o, '        if (not self.training) and _clb_os.environ.get("CLB_AUDIT") == "1" and getattr(self, "clb_ctx", None) is not None:  # CLB audit v4\n')
+    _pa.write_text(_sa)
+    compile(_sa, str(_pa), "exec")
+    print("models/modules/adapter.py: v4 (log only inside rollouts)")
+_pm = D / "metric.py"
+_sm = _pm.read_text()
+if "CLB audit v4" not in _sm:
+    _o = '                    _clb_ad.CLB_ACT_LOG.append((i, steps, np.asarray(actions)[:, -1].astype("float16")))\n'
+    assert _sm.count(_o) == 1, "metric v4 anchor"
+    _sm = _sm.replace(_o, _o + "                    algo.policy.moe_router.clb_ctx = None  # CLB audit v4: stop logging until the next rollout step\n")
+    _pm.write_text(_sm)
+    compile(_sm, str(_pm), "exec")
+    print("metric.py: v4 (clear context after each action)")
