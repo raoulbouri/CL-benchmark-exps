@@ -12,9 +12,8 @@ Written 2026-10-03 from the actual file list on AIMS. It is a guide, not a sourc
 | 4 | `PI_REVIEW.md` §3–5 | 15 min | What is public vs adapted vs built, the infrastructure standard, the phase plan and gates |
 | 5 | `docs/COST_MODEL.md` | 5 min | Measured costs from the Phase 1 micro-runs |
 | 6 | This file §2–4 | 20 min | Where each piece of code lives and what it does |
-| 7 | `docs/HANDOFF.md` | 5 min | Current status, ground rules, open decisions, next steps (rewritten 3 Oct). A shorter version of this reading list |
 
-Superseded or reference only: `PLAN.md` (the v2 review; `PI_REVIEW.md` governs), `docs/ISSUE_DRAFTS.md` and `docs/ISSUES_DMPEL_FOR_APPROVAL.md` (drafts; issues #6–#8 were posted on HarryLui98/DMPEL, issue 4 was not).
+Deleted on 4 Oct 2026 (recoverable from git history): `PLAN.md` (the v2 review; `PI_REVIEW.md` governs), `docs/HANDOFF.md`, `docs/ISSUE_DRAFTS.md`, `docs/ISSUES_DMPEL_FOR_APPROVAL.md`, `docs/WORKSPACE_README_aims.md`. Issues #6–#8 were posted on HarryLui98/DMPEL, issue 4 was not.
 
 External papers, in the order they matter: LIBERO (arXiv 2306.03310) → DMPEL (2506.05985) → CLARE (2601.09512) → "Pretrained VLAs resist forgetting" (2603.03818) → MLR+IFA (2603.10929) → Zhou et al. "A Model or 603 Exemplars" (2205.13218) → Prabhu et al. "Computationally Budgeted CL" (2303.11165) → LIBERO-PRO (2510.03827), LIBERO-Plus.
 
@@ -24,14 +23,14 @@ External papers, in the order they matter: LIBERO (arXiv 2306.03310) → DMPEL (
 |---|---|---|
 | `/usr1/home/bbouri/CL-benchmark` (AIMS) | The benchmark harness, specs, results, docs. **Source of truth** | Yes (AIMS only, no remote) |
 | `/usr1/home/bbouri/continual-learning` (AIMS) | Older workspace: conda envs, data, checkpoints, the cloned third-party code with our patches applied | No |
-| `~/Developer/CL-benchmark-HANDOFF.md` (Mac) | Copy of the 2 Oct handoff | – |
-| `~/.claude/jobs/…/tmp/clb` (Mac) | Working copy of the harness, rsynced to AIMS (never edit docs here) | No |
+| `/Users/rahulbouri/Developer/CL-benchmark-exps` (Mac) | Local git checkout of the repository (default machine is now xulab; see `docs/XULAB_NOTES.md`) | Yes (GitHub `raoulbouri/CL-benchmark-exps`) |
+| local working copy (Mac) | Working copy of the harness, rsynced to AIMS (never edit docs here) | No |
 | W&B `rahulbouri16/cl-benchmark` | Mirror of metrics for every run | – |
 
 ## 2. The benchmark repository, file by file (`CL-benchmark/`)
 
 ### Top level
-- `PI_REVIEW.md`: governing plan and phase gates. `PLAN.md`: earlier review, superseded.
+- `PI_REVIEW.md`: governing plan and phase gates.
 - `.gitignore`: excludes `.env` (W&B key), `outputs/`, `wandb/`, checkpoints and caches. `.env` holds `WANDB_API_KEY`, never committed.
 
 ### `cl_bench/`: the library (no training code is imported here)
@@ -72,7 +71,7 @@ All `patch_*.py` scripts are idempotent and edit third-party clones in `continua
 ### `logs/`: queue and setup logs (ignored by git since 3 Oct; still on disk)
 ### `outputs/` (not in git): per-attempt run directories: `train.log`, `command.sh`, `gpu_mem.csv`, checkpoints, per-task files
 ### `docs/`
-`PROTOCOL.md`, `DECISIONS.md`, `COST_MODEL.md`, `HANDOFF.md`, `ISSUE_DRAFTS.md`, `ISSUES_DMPEL_FOR_APPROVAL.md`, and this file.
+`PROTOCOL.md`, `DECISIONS.md`, `COST_MODEL.md`, `XULAB_NOTES.md`, `MIGRATION_AIMS_TO_XULAB.md`, `PROPOSAL_benchmark_vs_roadmap.md`, and this file.
 
 ## 3. The third-party code (`continual-learning/third_party/`)
 
@@ -101,4 +100,3 @@ Patches applied on top of DMPEL: data-loading `demos` shim, protocol and task ca
 ## 6. Known gaps in this documentation
 - No docstring-level API docs for `cl_bench/`; the module headers above are the only description.
 - `continual-learning/README.md` was refreshed on 3 Oct but still describes the older replication scripts in `continual-learning/scripts/`, which the benchmark does not use.
-- `PLAN.md` (v2 review) is kept for history and is superseded by `PI_REVIEW.md`.

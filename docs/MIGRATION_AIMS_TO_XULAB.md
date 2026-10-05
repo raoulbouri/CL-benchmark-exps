@@ -7,7 +7,7 @@ Goal: everything lives on `xulab` under `/mnt/data/users/bbouri`. AIMS has been 
 | Item | On the Mac | On xulab | Only on AIMS | How to get it |
 |---|---|---|---|---|
 | Harness code (`cl_bench/`, `scripts/`, `tests/`), run specs, queues | yes (working copy) | yes (synced) | the git history | Fresh git repo started on xulab 4 Oct |
-| Docs (`PI_REVIEW`, `PLAN`, `DECISIONS`, `PROTOCOL`, `COST_MODEL`, `HANDOFF`, `REPO_MAP`, issue drafts) | yes | yes (synced 4 Oct) | newer appends (none known beyond the DDP entry, now restored) | when AIMS returns, diff `docs/` against it |
+| Docs (`PI_REVIEW`, `DECISIONS`, `PROTOCOL`, `COST_MODEL`, `REPO_MAP`; `PLAN`, `HANDOFF` and the issue drafts were deleted 4 Oct) | yes | yes (synced 4 Oct) | newer appends (none known beyond the DDP entry, now restored) | when AIMS returns, diff `docs/` against it |
 | Third-party patches (`configs/patches/*.patch`) | no | no | yes | Regenerate: apply `scripts/patch_*.py`, then `git diff` in the clone (the scripts are the source of truth) |
 | Third-party clones | no | DMPEL @ b1abe28, patched | LIBERO, openpi, CLARE, gym-libero | Public; re-clone at the commits in `configs/third_party.lock` |
 | LIBERO demonstrations (100 GB) | no | downloading (log: `/mnt/data/users/bbouri/logs/download.log`) | yes (94 GB) | Public (HF `yifengzhu-hf/LIBERO-datasets`) |

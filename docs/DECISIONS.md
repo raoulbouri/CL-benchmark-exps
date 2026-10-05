@@ -39,7 +39,7 @@ Dated record of protocol and scope changes. Newest last.
   - The Phase 1 CLARE runs reported `success = 0.0`, while the same evaluations had mean episode reward 0.68–0.75. LIBERO's reward is 1 on success, so about 70–75% of episodes succeeded.
   - Cause: `eval_peft.py` reads success only from `info["final_info"]`, a key Gymnasium ≥ 1.0 vector envs no longer produce. Our env has gymnasium 1.3.0; CLARE's `pixi.lock` also lists a 1.x version (1.2.1).
   - Patch (in `scripts/patch_clare_protocol.py`): if `final_info` is absent, read `info["is_success"]`, which `gym_libero` sets per step.
-  - Added to `docs/ISSUE_DRAFTS.md`.
+  - A draft issue was written (the draft file was deleted on 4 Oct 2026).
 - **2026-10-01: CLARE runs are sequential on one GPU.** CLARE's ER was killed with SIGKILL (rc −9) while two CLARE evaluations ran at once (2 × 50 MuJoCo envs). Kernel logs are not readable without root; host RAM exhaustion is the likely cause. CLARE-codebase runs are now queued one after another.
 - **2026-10-01: Metrics bug fixed.** The bootstrap inferred the number of finished tasks from non-zero matrix rows; an all-zero matrix crashed the final export. The task count is now always explicit.
 - **2026-10-01: DMPEL-codebase ER uses gradient accumulation (user decision).**
@@ -48,7 +48,7 @@ Dated record of protocol and scope changes. Newest last.
   - The OneCycle schedule still advances per micro-batch over the same epochs.
 - **2026-10-01: Finding, not changed: DMPEL-codebase ER clips gradients before unscaling.**
   - `algos/er.py` calls `clip_grad_norm_(…, 100)` on fp16-scaled gradients (no `scaler.unscale_`), unlike `algos/base.py`. With a typical GradScaler scale (~65k), this clips the true gradient norm far below 100 and shrinks ER's effective learning rate. It may partly explain weak ER baselines in the literature.
-  - The `original` protocol keeps the released behaviour. Whether benchmark runs should fix it (unscale before clipping) is an open decision before Phase 4, and is added to `ISSUE_DRAFTS.md`.
+  - The `original` protocol keeps the released behaviour. Whether benchmark runs should fix it (unscale before clipping) is an open decision before Phase 4 (the draft file was deleted on 4 Oct 2026).
 - **2026-10-01: ER micro-batch 4 (+4) × 8 accumulation.** 8 + 8 × 4 still ran out of GPU memory in task 1 (320 images per forward through full fine-tune CLIP). 4 + 4 × 8 keeps 32 + 32 per optimizer step.
 - **2026-10-01: No concurrent DMPEL + CLARE jobs.** CLARE original was SIGKILLed again while DMPEL ER ran. Remaining Phase 1 runs are chained one at a time (`scripts/chain_p1_final.sh`). CLARE original-protocol eval uses 25 parallel envs; 100 episodes still cover each of the 50 initial states twice.
 - **2026-10-01: CLARE uses the paper's settings (user decision).**
@@ -61,7 +61,7 @@ Dated record of protocol and scope changes. Newest last.
 - **2026-10-01: DMPEL issues posted.** #6 (FWT counter), #7 (ER n_memories), #8 (AMP clipping in baselines), posted from the user account without a signature. Issue 4 (installation) is pending the user approving a reference to existing issue #2, which reported the same demos error but attributed it to the dataset structure.
 - **2026-10-01: DMPEL-codebase ER still failing (attempt 3, micro-batch 4+4 x 8).** Task 1 training fits (14 GB), but the run OOMs in the task-1 selection evaluation (metric.py:168) while the training process holds only 4.3 GB and ~19 GB of GPU 0 is held by other processes. Hypothesis: interaction between evaluation workers and ER forcing the fork start method on every step (er.py observe). Needs a targeted diagnosis before ER enters Phase 2+.
 - **2026-10-01: Issue posting stopped by the user.** #6-#8 are posted; Issue 4 (installation) will not be posted.
-- **2026-10-03: Process note: AIMS is the source of truth for the harness.** The Mac folder `~/.claude/jobs/…/clb` is only a working copy that is rsynced to AIMS. A copy from the Mac overwrote three notes that had been appended on AIMS (restored above from git history). From now on, docs are edited on AIMS only, and syncs from the Mac exclude `docs/`.
+- **2026-10-03: Process note: AIMS is the source of truth for the harness.** The Mac folder a local working copy is only a working copy that is rsynced to AIMS. A copy from the Mac overwrote three notes that had been appended on AIMS (restored above from git history). From now on, docs are edited on AIMS only, and syncs from the Mac exclude `docs/`.
 - **2026-10-02/03: GPU driver wedge on AIMS (04:35 UTC Oct 2), resolved by a machine restart.**
   - Timeline: another user's 16-worker evaluation job started 04:34:22; our `eval_mem_probe.py` (20 EGL workers on GPU 0) started 04:35:20; by 04:36:15 the NVIDIA driver was deadlocked: `nvidia-smi` hung for every user, and processes of both users sat in uninterruptible sleep (our probe's main process in `nvidia_close_callback`, workers on driver locks). Load stayed pinned at ~49 until an admin restarted the machine (uptime reset by Oct 3 15:24; GPUs idle and responsive afterwards).
   - Cause not proven: kernel logs need root. The trigger is plausibly many GPU contexts being created and torn down at once by two jobs; our probe is a possible contributor.

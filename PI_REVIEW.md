@@ -1,9 +1,9 @@
-# CL-Benchmark: PI review of PLAN.md (v2) and approved phase plan
+# CL-Benchmark: PI review of the v2 plan and approved phase plan
 
 Reviewer role: PI. Reviewed 30 Sep 2026.
-Inputs: `PLAN.md` (v2, written by the PhD student, reviewing the grad student's v1), the public code and checkpoints, the papers cited below, and our own runs on AIMS.
+Inputs: the v2 plan (written by the PhD student, reviewing the grad student's v1; the file was deleted on 4 Oct 2026 and is in git history), the public code and checkpoints, the papers cited below, and our own runs on AIMS.
 
-Where this document and `PLAN.md` disagree, **this document governs**. `PLAN.md` stays as the record of the v2 reasoning.
+This document governs.
 
 Official result log: **Weights & Biases**, entity `rahulbouri16`, project `cl-benchmark` (verified working from both conda envs on 30 Sep). The key is read from `.env` only.
 
@@ -96,7 +96,7 @@ Yes, if it is scoped to the four contributions below. Each is tied to the phase 
 
 ---
 
-## 2. Audit of PLAN.md (v2)
+## 2. Audit of the v2 plan
 
 ### Claims in v2 that hold (re-verified)
 
@@ -188,7 +188,6 @@ Directory: `/usr1/home/bbouri/CL-benchmark`
 CL-benchmark/
 ├── .env                   # WANDB_API_KEY (never committed)
 ├── .gitignore             # .env, outputs/, wandb/, *.pth, caches
-├── PLAN.md                # v2 record (PhD student)
 ├── PI_REVIEW.md           # this file (governs)
 ├── docs/
 │   ├── PROTOCOL.md        # frozen evaluation protocol (versioned)

@@ -46,3 +46,7 @@ What this establishes:
 ### Still to reconcile when AIMS returns
 - Copy this result's JSON and the cost-model rows into the AIMS repository (`results/`, `docs/COST_MODEL.md`); the AIMS ER row there still shows failures.
 - This copy of the harness has no git history.
+
+## Default machine and repository (4 Oct 2026)
+- xulab is the default remote for this project. All paths live under `/mnt/data/users/bbouri`; AIMS is an archive.
+- Repository: `git@github.com:raoulbouri/CL-benchmark-exps.git` (branch `main`), checked out at `/mnt/data/users/bbouri/CL-benchmark`. Pushes only on the user's instruction, via `ssh -A xulab` (the Mac's key is forwarded; no private key is stored on xulab).

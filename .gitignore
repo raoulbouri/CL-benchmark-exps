@@ -10,3 +10,6 @@ wandb/
 __pycache__/
 .pytest_cache/
 *.json.tmp
+# macOS metadata
+._*
+.DS_Store
