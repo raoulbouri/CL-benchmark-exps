@@ -7,5 +7,5 @@ source /mnt/data/users/bbouri/env_x.sh
 source $CL_ROOT/env_dmpel.sh
 cd $CLB_ROOT
 mkdir -p $XB/logs
-nohup python scripts/guard.py "$GPU" --max-hours 12 > $XB/logs/guard.out 2>&1 &
+nohup python scripts/guard.py "$GPU" --max-hours ${CLB_MAX_HOURS:-12} > $XB/logs/guard.out 2>&1 &
 bash scripts/queue.sh "$GPU" "$QUEUE"
