@@ -1,0 +1,19 @@
+# Experiment 4: identical to Experiment 2 (D-long10-dmpel-full-rho005-bias-ne10-original-s100) except that frozen experts are held
+# exactly constant (CLB_FIX_FROZEN_WD=1, scripts/patch_dmpel_frozen_wd.py), so AdamW weight decay no longer shrinks them.
+# Long (libero_10), 10 tasks, rho = 0.05, tune_bias on, 10 evaluation rollouts, original protocol, seed 100, GPU 1.
+track: D
+suite: libero_10
+n_tasks: 10
+method: dmpel
+budget: full
+tag: rho005-bias-ne10-FIXEDWD
+protocol: original
+seed: 100
+phase: e4
+codebase: dmpel
+machine: xulab-rtx5090
+dmpel:
+  policy: bc_foundation_dmpel_policy
+  lifelong: dmpel
+  env: {CLB_AUDIT: 1, CLB_FIX_FROZEN_WD: 1}
+  overrides: ["lifelong.moe_attn_recall_sample_ratio=0.05", "policy.tune_bias=true", "eval.n_eval=10", "eval.num_procs=5", "train.num_workers=8", "eval.num_workers=4"]

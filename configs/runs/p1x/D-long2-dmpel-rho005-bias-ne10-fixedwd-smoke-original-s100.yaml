@@ -1,0 +1,18 @@
+# Experiment 4 verification: same as the Experiment 2 Long smoke test (2 tasks, 2 epochs, 5 rollouts) with the frozen-expert weight-decay fix on.
+# Check in train.log: the live norms of expert 0 must be identical at the start and end of task 1 training. Not a result.
+track: D
+suite: libero_10
+n_tasks: 2
+method: dmpel
+budget: smoke
+tag: rho005-bias-ne10-FIXEDWD
+protocol: original
+seed: 100
+phase: e4
+codebase: dmpel
+machine: xulab-rtx5090
+dmpel:
+  policy: bc_foundation_dmpel_policy
+  lifelong: dmpel
+  env: {CLB_AUDIT: 1, CLB_FIX_FROZEN_WD: 1}
+  overrides: ["train.n_epochs=2", "lifelong.moe_attn_recall_epochs=1", "lifelong.moe_attn_recall_sample_ratio=0.05", "policy.tune_bias=true", "eval.n_eval=5", "eval.num_procs=5", "train.num_workers=8", "eval.num_workers=4"]
