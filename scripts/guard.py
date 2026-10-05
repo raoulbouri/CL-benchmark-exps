@@ -16,6 +16,7 @@ import sys
 import time
 
 GPU = int(sys.argv[1])
+MATCH = sys.argv[sys.argv.index("--match") + 1] if "--match" in sys.argv else "scripts/launch.py"  # which job to guard
 MAX_H = float(sys.argv[sys.argv.index("--max-hours") + 1]) if "--max-hours" in sys.argv else 12.0
 LOG = os.path.join(os.environ.get("XB", "/mnt/data/users/bbouri"), "logs", "guard.log")
 LIM = {"temp_c": 85, "gpu_mem_mib": 29000, "root_free_gb": 4, "ram_avail_gb": 30}
@@ -42,7 +43,7 @@ def run(cmd, deadline=20):
 
 
 def job_pids():
-    out = run(["pgrep", "-u", ME, "-f", "scripts/launch.py"], 10)
+    out = run(["pgrep", "-u", ME, "-f", MATCH], 10)
     return [int(x) for x in (out or "").split()]
 
 
