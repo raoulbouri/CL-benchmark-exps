@@ -150,14 +150,15 @@ def dmpel_command(spec, out_dir, gpu):
         args.append(f"max_tasks={spec['n_tasks']}")
     args += d.get("overrides", [])
     n = int(d.get("ddp_gpus", 1))
+    xenv = "".join(f"{k}={v} " for k, v in d.get("env", {}).items())  # per-spec environment, e.g. CLB_AUDIT=1
     if n > 1:  # authors' setup: torchrun DDP; train.batch_size is per GPU; evaluation runs on rank 0 (GPU 0)
         args.append("use_ddp=true")
         py = " ".join(f"'{a}'" for a in args)
         devs = ",".join(str(i) for i in range(n))
-        return (f"source {CL_ROOT}/env_dmpel.sh && export CUDA_VISIBLE_DEVICES={devs} MUJOCO_EGL_DEVICE_ID=0 "
+        return (f"source {CL_ROOT}/env_dmpel.sh && export CUDA_VISIBLE_DEVICES={devs} MUJOCO_EGL_DEVICE_ID=0 {xenv}"
                 f"WANDB_MODE=disabled && cd {DMPEL_DIR} && exec torchrun --standalone --nproc_per_node={n} libero/lifelong/main.py {py}")
     py = " ".join(f"'{a}'" for a in args)
-    return (f"source {CL_ROOT}/env_dmpel.sh && export CUDA_VISIBLE_DEVICES={gpu} MUJOCO_EGL_DEVICE_ID={gpu} "
+    return (f"source {CL_ROOT}/env_dmpel.sh && export CUDA_VISIBLE_DEVICES={gpu} MUJOCO_EGL_DEVICE_ID={gpu} {xenv}"
             f"WANDB_MODE=disabled && cd {DMPEL_DIR} && exec python libero/lifelong/main.py {py}")
 
 

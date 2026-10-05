@@ -1,0 +1,17 @@
+# Smoke test for scripts/patch_dmpel_audit.py: 1 task, 1 epoch, 1 recall epoch, rho = 0.05. Exercises evaluation followed by the
+# buffer pass (the path that crashed on 2026-10-04) and the routing flush. Not a result.
+track: D
+suite: libero_goal
+n_tasks: 1
+method: dmpel
+budget: smoke
+protocol: original
+seed: 100
+phase: e1
+codebase: dmpel
+machine: xulab-rtx5090
+dmpel:
+  policy: bc_foundation_dmpel_policy
+  lifelong: dmpel
+  env: {CLB_AUDIT: 1}
+  overrides: ["train.n_epochs=1", "lifelong.moe_attn_recall_epochs=1", "lifelong.moe_attn_recall_sample_ratio=0.05", "eval.num_procs=5", "train.num_workers=8", "eval.num_workers=4"]
