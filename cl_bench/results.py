@@ -15,7 +15,8 @@ def run_name(spec):
     suite = SUITE_SHORT.get(spec["suite"], spec["suite"])
     if spec.get("n_tasks"):
         suite += str(spec["n_tasks"])
-    return f"{spec['track']}-{suite}-{spec['method']}-{spec['budget']}-{spec['protocol']}-s{spec['seed']}"
+    budget = spec["budget"] + (f"-{spec['tag']}" if spec.get("tag") else "")  # optional tag keeps variants apart
+    return f"{spec['track']}-{suite}-{spec['method']}-{budget}-{spec['protocol']}-s{spec['seed']}"
 
 
 def group_name(spec):

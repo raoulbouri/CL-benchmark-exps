@@ -1,0 +1,20 @@
+# Experiment 2: DMPEL on LIBERO-Long (libero_10), 10 tasks, coefficient buffer at 5%, per-expert bias tuned (policy.tune_bias=true),
+# 10 evaluation rollouts per task-evaluation (eval.n_eval=10). Decisions by the user on 2026-10-05; the released defaults are
+# tune_bias=false and n_eval=20 (the Goal run, D-goal10-dmpel-full-original-s100, used the defaults except rho).
+# xulab: GPU 1 only, one GPU (no DDP). Audit patch v3 records buffer indices, router outputs and commanded gripper per eval step.
+track: D
+suite: libero_10
+n_tasks: 10
+method: dmpel
+budget: full
+tag: rho005-bias-ne10
+protocol: original
+seed: 100
+phase: e2
+codebase: dmpel
+machine: xulab-rtx5090
+dmpel:
+  policy: bc_foundation_dmpel_policy
+  lifelong: dmpel
+  env: {CLB_AUDIT: 1}
+  overrides: ["lifelong.moe_attn_recall_sample_ratio=0.05", "policy.tune_bias=true", "eval.n_eval=10", "eval.num_procs=5", "train.num_workers=8", "eval.num_workers=4"]

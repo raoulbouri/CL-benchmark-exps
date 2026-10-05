@@ -9,6 +9,7 @@ train loader when it builds the buffer, so even a saved permutation could not be
                       and the router's top-k expert index and weight for EVERY frame (not only the kept ones).
   2. models/modules/adapter.py   MoERouterCoeff.forward appends (top-k idx, top-k coeff, ctx) per call when the
                       router is in eval mode and env CLB_AUDIT=1.
+  (v3) also logs the commanded gripper (last action dimension, +1/-1) per (loop, step) next to the router calls.
   3. metric.py        evaluate_one_task_success sets the (loop, step) context before each get_action call and
                       saves routing/<task>_<n>_<sel|matrix>.npz after each evaluation. Nothing is recorded unless CLB_AUDIT=1.
 
@@ -199,3 +200,39 @@ patch("metric.py", [
 """,
     ),
 ])
+
+
+# v3: commanded gripper (last action dimension) per (loop, step), saved next to the router calls, so routing can be joined
+# with gripper open/close events. Needs no new observation: the policy's own action carries the gripper command (+1/-1).
+_pa = D / "models/modules/adapter.py"
+_sa = _pa.read_text()
+if "CLB_ACT_LOG" not in _sa:
+    _o = "CLB_ROUTE_LOG = []  # CLB audit: filled by MoERouterCoeff.forward in eval mode when CLB_AUDIT=1\n"
+    assert _sa.count(_o) == 1, "adapter v3 anchor"
+    _sa = _sa.replace(_o, _o + "CLB_ACT_LOG = []    # CLB audit v3: (loop, step, commanded gripper per env), filled by metric.py\n")
+    _pa.write_text(_sa)
+    compile(_sa, str(_pa), "exec")
+    print("models/modules/adapter.py: v3 gripper log added")
+_pm = D / "metric.py"
+_sm = _pm.read_text()
+if "CLB_ACT_LOG" not in _sm:
+    _a1 = "                actions = algo.policy.get_action(data)\n"
+    _n1 = _a1 + (
+        "                if os.environ.get(\"CLB_AUDIT\") == \"1\" and hasattr(algo.policy, \"moe_router\"):  # CLB audit v3\n"
+        "                    from libero.lifelong.models.modules import adapter as _clb_ad\n"
+        "                    _clb_ad.CLB_ACT_LOG.append((i, steps, np.asarray(actions)[:, -1].astype(\"float16\")))\n")
+    _a2 = "                topk_coeff=np.concatenate([c[2] for c in log], axis=0),\n            )\n"
+    _n2 = ("                topk_coeff=np.concatenate([c[2] for c in log], axis=0),\n"
+           "                act_loop=np.array([a[0] for a in _clb_adapter.CLB_ACT_LOG], dtype=np.int16),\n"
+           "                act_step=np.array([a[1] for a in _clb_adapter.CLB_ACT_LOG], dtype=np.int16),\n"
+           "                act_rows=np.array([len(a[2]) for a in _clb_adapter.CLB_ACT_LOG], dtype=np.int16),\n"
+           "                act_grip=np.concatenate([a[2] for a in _clb_adapter.CLB_ACT_LOG]) if _clb_adapter.CLB_ACT_LOG else np.zeros(0, \"float16\"),\n"
+           "            )\n")
+    _a3 = "        del log[:]\n"
+    _n3 = "        del log[:]\n        del _clb_adapter.CLB_ACT_LOG[:]\n"
+    for _o, _n in ((_a1, _n1), (_a2, _n2), (_a3, _n3)):
+        assert _sm.count(_o) == 1, f"metric v3 anchor not unique: {_o!r}"
+        _sm = _sm.replace(_o, _n)
+    _pm.write_text(_sm)
+    compile(_sm, str(_pm), "exec")
+    print("metric.py: v3 gripper log added")

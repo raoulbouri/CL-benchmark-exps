@@ -1,0 +1,18 @@
+# Smoke test for Experiment 2 settings: 2 Long tasks, 1 epoch, 1 recall epoch. Exercises tune_bias=true with expert growth
+# (task 1 adds an expert and its bias row), the recall step, n_eval=10, and the v3 gripper log. Not a result.
+track: D
+suite: libero_10
+n_tasks: 2
+method: dmpel
+budget: smoke
+tag: rho005-bias-ne10
+protocol: original
+seed: 100
+phase: e2
+codebase: dmpel
+machine: xulab-rtx5090
+dmpel:
+  policy: bc_foundation_dmpel_policy
+  lifelong: dmpel
+  env: {CLB_AUDIT: 1}
+  overrides: ["train.n_epochs=1", "lifelong.moe_attn_recall_epochs=1", "lifelong.moe_attn_recall_sample_ratio=0.05", "policy.tune_bias=true", "eval.n_eval=10", "eval.num_procs=5", "train.num_workers=8", "eval.num_workers=4"]
