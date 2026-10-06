@@ -13,3 +13,6 @@ __pycache__/
 # macOS metadata
 ._*
 .DS_Store
+# large generated files
+*.npz
+data/

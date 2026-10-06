@@ -1,0 +1,18 @@
+Restore test: DMPEL LIBERO-Long, seed 100, final model (task 9) with every expert restored to its creation-time weights.
+10 rollouts per task, `original` protocol, initial states 0..9, evaluation workers: 5. Router = final router in both conditions.
+'Original final SR' = last row of the run's success matrix. 'Control' = the unchanged final model re-evaluated in this script.
+
+Task | Original final SR | Control re-eval | Restored SR | Change vs original | Change vs control
+   0 |               0.7 |             0.5 |         0.9 |               +0.2 |              +0.4
+   1 |               0.1 |             0.2 |         1.0 |               +0.9 |              +0.8
+   2 |               0.7 |             0.6 |         0.9 |               +0.2 |              +0.3
+   3 |               0.7 |             0.9 |         0.8 |               +0.1 |              -0.1
+   4 |               0.9 |             0.6 |         0.9 |               +0.0 |              +0.3
+   5 |               0.9 |             0.8 |         0.6 |               -0.3 |              -0.2
+   6 |               0.2 |             0.3 |         0.3 |               +0.1 |              +0.0
+   7 |               0.4 |             0.7 |         0.7 |               +0.3 |              +0.0
+   8 |               0.7 |             0.6 |         0.5 |               -0.2 |              -0.1
+   9 |               0.3 |             0.4 |         0.4 |               +0.1 |              +0.0
+mean |             0.560 |           0.560 |       0.700 |             +0.140 |            +0.140
+
+Key question: task index 1 restored SR = 1.0 (original final 0.1, control 0.2); recovers above 0.4: yes. With 10 rollouts one task's SR moves in steps of 0.1 (Wilson 95% interval of 4/10 is 0.17-0.69).

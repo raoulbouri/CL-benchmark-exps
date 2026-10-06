@@ -1,0 +1,7 @@
+matplotlib==3.10.9
+mujoco==2.3.7
+numpy==1.23.5
+scipy==1.15.3
+torch==2.7.1+cu128
+torchvision==0.22.1+cu128
+wandb==0.30.0

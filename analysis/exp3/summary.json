@@ -1,0 +1,67 @@
+{
+ "part_a": {
+  "floor_median": 0.9986768098974641,
+  "floor_p5": 0.9942527581829802,
+  "spearman": -0.1436697502694536,
+  "p": 0.3556,
+  "n_cells": 45
+ },
+ "part_b": {
+  "all logged steps|expert-switch rate (any group)": {
+   "long": 0.031812662115895424,
+   "goal": 0.038492265122290516,
+   "ci": [
+    0.7343340508737091,
+    0.9397499486081874
+   ]
+  },
+  "all logged steps|expert-switch rate (mean over groups)": {
+   "long": 0.005380115623372886,
+   "goal": 0.0067445829615648155,
+   "ci": [
+    0.6940906510190337,
+    0.918924724311145
+   ]
+  },
+  "all logged steps|coefficient variance over time": {
+   "long": 2.212090253829956,
+   "goal": 1.539086937904358,
+   "ci": [
+    1.2121593326330184,
+    1.7177692264318463
+   ]
+  },
+  "first 200 steps|expert-switch rate (any group)": {
+   "long": 0.036833333333333336,
+   "goal": 0.041224939712167126,
+   "ci": [
+    0.787459411485773,
+    1.0114181815314092
+   ]
+  },
+  "first 200 steps|expert-switch rate (mean over groups)": {
+   "long": 0.00625,
+   "goal": 0.007234826678730102,
+   "ci": [
+    0.7540204819529659,
+    0.998619187928694
+   ]
+  },
+  "first 200 steps|coefficient variance over time": {
+   "long": 1.3862652778625488,
+   "goal": 1.581688404083252,
+   "ci": [
+    0.7575070321559906,
+    1.0247766137123109
+   ]
+  },
+  "gripper_enrichment": {
+   "ratio": 0.8942022233572142,
+   "near": 0.019201303093466588,
+   "far": 0.02147311043510578,
+   "null_mean": 1.1103371346886646,
+   "null_p95": 1.1672329318389234,
+   "n_flips": 17416
+  }
+ }
+}
