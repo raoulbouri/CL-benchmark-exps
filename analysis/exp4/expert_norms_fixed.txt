@@ -1,0 +1,82 @@
+run: /mnt/data/users/bbouri/CL-benchmark/outputs/D-long10-dmpel-full-rho005-bias-ne10-FIXEDWD-original-s100/a2/seed_100
+norm_A / norm_B / norm_bias of each expert after each task; 'same' = bit-identical to its creation-time weights
+
+ckpt expert   norm_A   norm_B norm_bias  same as creation
+   0      0    5.767    3.105    0.2020              True
+   1      0    5.767    3.105    0.2020              True
+   1      1    9.346    5.256    0.4900              True
+   2      0    5.767    3.105    0.2020              True
+   2      1    9.346    5.256    0.4900              True
+   2      2    7.832    3.505    0.3065              True
+   3      0    5.767    3.105    0.2020              True
+   3      1    9.346    5.256    0.4900              True
+   3      2    7.832    3.505    0.3065              True
+   3      3    7.504    3.429    0.2956              True
+   4      0    5.767    3.105    0.2020              True
+   4      1    9.346    5.256    0.4900              True
+   4      2    7.832    3.505    0.3065              True
+   4      3    7.504    3.429    0.2956              True
+   4      4    8.071    4.315    0.3241              True
+   5      0    5.767    3.105    0.2020              True
+   5      1    9.346    5.256    0.4900              True
+   5      2    7.832    3.505    0.3065              True
+   5      3    7.504    3.429    0.2956              True
+   5      4    8.071    4.315    0.3241              True
+   5      5    7.488    3.077    0.2397              True
+   6      0    5.767    3.105    0.2020              True
+   6      1    9.346    5.256    0.4900              True
+   6      2    7.832    3.505    0.3065              True
+   6      3    7.504    3.429    0.2956              True
+   6      4    8.071    4.315    0.3241              True
+   6      5    7.488    3.077    0.2397              True
+   6      6    7.903    4.282    0.3722              True
+   7      0    5.767    3.105    0.2020              True
+   7      1    9.346    5.256    0.4900              True
+   7      2    7.832    3.505    0.3065              True
+   7      3    7.504    3.429    0.2956              True
+   7      4    8.071    4.315    0.3241              True
+   7      5    7.488    3.077    0.2397              True
+   7      6    7.903    4.282    0.3722              True
+   7      7    7.324    2.815    0.2029              True
+   8      0    5.767    3.105    0.2020              True
+   8      1    9.346    5.256    0.4900              True
+   8      2    7.832    3.505    0.3065              True
+   8      3    7.504    3.429    0.2956              True
+   8      4    8.071    4.315    0.3241              True
+   8      5    7.488    3.077    0.2397              True
+   8      6    7.903    4.282    0.3722              True
+   8      7    7.324    2.815    0.2029              True
+   8      8   12.029    8.937    0.7906              True
+   9      0    5.767    3.105    0.2020              True
+   9      1    9.346    5.256    0.4900              True
+   9      2    7.832    3.505    0.3065              True
+   9      3    7.504    3.429    0.2956              True
+   9      4    8.071    4.315    0.3241              True
+   9      5    7.488    3.077    0.2397              True
+   9      6    7.903    4.282    0.3722              True
+   9      7    7.324    2.815    0.2029              True
+   9      8   12.029    8.937    0.7906              True
+   9      9    9.481    6.428    0.4217              True
+
+largest relative change of a frozen expert between consecutive checkpoints:
+  task 0 -> 1: 0.000000
+  task 1 -> 2: 0.000000
+  task 2 -> 3: 0.000000
+  task 3 -> 4: 0.000000
+  task 4 -> 5: 0.000000
+  task 5 -> 6: 0.000000
+  task 6 -> 7: 0.000000
+  task 7 -> 8: 0.000000
+  task 8 -> 9: 0.000000
+all frozen experts bit-identical to creation-time weights in every checkpoint: True
+
+reference run: /mnt/data/users/bbouri/CL-benchmark/outputs/D-long10-dmpel-full-rho005-bias-ne10-original-s100/a0/seed_100
+  task 0 -> 1: 0.016071
+  task 1 -> 2: 0.032679
+  task 2 -> 3: 0.023003
+  task 3 -> 4: 0.039551
+  task 4 -> 5: 0.005821
+  task 5 -> 6: 0.015756
+  task 6 -> 7: 0.041271
+  task 7 -> 8: 0.012834
+  task 8 -> 9: 0.046432

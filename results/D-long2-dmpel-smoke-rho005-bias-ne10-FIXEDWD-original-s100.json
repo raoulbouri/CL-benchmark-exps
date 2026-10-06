@@ -1,0 +1,159 @@
+{
+ "name": "D-long2-dmpel-smoke-rho005-bias-ne10-FIXEDWD-original-s100",
+ "group": "D-long2-dmpel-smoke-rho005-bias-ne10-FIXEDWD-original",
+ "spec": {
+  "track": "D",
+  "suite": "libero_10",
+  "n_tasks": 2,
+  "method": "dmpel",
+  "budget": "smoke",
+  "tag": "rho005-bias-ne10-FIXEDWD",
+  "protocol": "original",
+  "seed": 100,
+  "phase": "e4",
+  "codebase": "dmpel",
+  "machine": "xulab-rtx5090",
+  "dmpel": {
+   "policy": "bc_foundation_dmpel_policy",
+   "lifelong": "dmpel",
+   "env": {
+    "CLB_AUDIT": 1,
+    "CLB_FIX_FROZEN_WD": 1
+   },
+   "overrides": [
+    "train.n_epochs=2",
+    "lifelong.moe_attn_recall_epochs=1",
+    "lifelong.moe_attn_recall_sample_ratio=0.05",
+    "policy.tune_bias=true",
+    "eval.n_eval=5",
+    "eval.num_procs=5",
+    "train.num_workers=8",
+    "eval.num_workers=4"
+   ]
+  },
+  "eval_episodes": {
+   "selection": 20,
+   "matrix": 20
+  }
+ },
+ "status": "complete",
+ "run_dir": "/mnt/data/users/bbouri/CL-benchmark/outputs/D-long2-dmpel-smoke-rho005-bias-ne10-FIXEDWD-original-s100/a1/seed_100",
+ "log_path": "/mnt/data/users/bbouri/CL-benchmark/outputs/D-long2-dmpel-smoke-rho005-bias-ne10-FIXEDWD-original-s100/a1/train.log",
+ "tasks_done": 2,
+ "attempt": 1,
+ "spec_path": "/mnt/data/users/bbouri/CL-benchmark/configs/runs/p1x/D-long2-dmpel-rho005-bias-ne10-fixedwd-smoke-original-s100.yaml",
+ "gpu_index": 1,
+ "provenance": {
+  "harness_commit": "3d0bdcc",
+  "harness_dirty": true,
+  "third_party_lock": "# third-party commits used by CL-benchmark (path  commit)  -- recreated 2026-10-04 from the AIMS record\nDMPEL  b1abe28  (patched: see configs/patches/ and scripts/patch_*.py)\nLIBERO  8f1084e\nopenpi  215abfb  (read-only study; not used in runs)\nclare  ecb6600  (patched: eval_peft.py via scripts/patch_clare_protocol.py)\ngym-libero  29955c7\n",
+  "host": "autolab",
+  "gpu": "NVIDIA GeForce RTX 5090"
+ },
+ "started_at": 1791239674.7868326,
+ "schema_version": 1,
+ "updated_at": "2026-10-05T23:16:41Z",
+ "wandb": {
+  "id": "362ca6bf8435",
+  "mode": "online",
+  "url": "https://wandb.ai/rahulbouri16/cl-benchmark/runs/362ca6bf8435",
+  "tasks_logged": 2
+ },
+ "returncode": 0,
+ "gpu_peak_mib": {
+  "gpu0_peak_mib": 6501,
+  "gpu1_peak_mib": 20302
+ },
+ "wall_hours": 0.7012683600187302,
+ "gpus_used": [
+  1
+ ],
+ "n_tasks": 2,
+ "c_matrix": [
+  [
+   0.6,
+   null
+  ],
+  [
+   0.6,
+   0.6
+  ]
+ ],
+ "curves": [
+  [
+   0.0,
+   0.4
+  ],
+  [
+   0.0,
+   0.4
+  ]
+ ],
+ "dmpel_logged_s_fwd": [
+  0.2,
+  0.2
+ ],
+ "metrics": {
+  "n_tasks_scored": 2,
+  "fwt": 0.2,
+  "nbt": 0.0,
+  "nbt_normalized": 0.0,
+  "auc": 0.30000000000000004,
+  "final_success": 0.6,
+  "mean_just_learned_success": 0.6,
+  "best_minus_last_epoch": 0.0
+ },
+ "accounting": {
+  "per_task": [
+   {
+    "replay_bytes_on_disk": 4680450,
+    "replay_bytes_past_tasks": 0,
+    "aux_bytes": 1711,
+    "growth_params": 1251456,
+    "growth_bytes": 5103543
+   },
+   {
+    "replay_bytes_on_disk": 9008900,
+    "replay_bytes_past_tasks": 4680450,
+    "aux_bytes": 3678,
+    "growth_params": 1909811,
+    "growth_bytes": 7736759
+   }
+  ]
+ },
+ "timings": {
+  "per_task_train_min": [
+   17.1,
+   14.7
+  ],
+  "per_task_eval_loss_min": [
+   2.5,
+   4.4
+  ],
+  "per_task_eval_success_min": [
+   1.6,
+   1.5
+  ],
+  "selection_eval_min_total": 5.64,
+  "gpu_hours_logged": 0.6966666666666668,
+  "peak_train_mem_gb": 18.432
+ },
+ "bootstrap_episode_ci95": {
+  "fwt": [
+   0.125,
+   0.275
+  ],
+  "nbt": [
+   -0.30000000000000004,
+   0.3
+  ],
+  "auc": [
+   0.21875,
+   0.38125
+  ],
+  "final_success": [
+   0.45,
+   0.75
+  ]
+ }
+}
